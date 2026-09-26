@@ -1,1 +1,1 @@
-# Ec2CpuUsageAlerts-Lambda
+# ec2-cpu-usage-lambda
