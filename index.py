@@ -18,6 +18,11 @@ url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
 
 def lambda_handler(event, context):
 
+    print(json.dumps(event, indent=2))
+
+    message = event["Records"][0]["Sns"]["Message"]
+    alarm = json.loads(message)
+
     lambda_name = context.function_name
 
     timestamp = datetime.now(ZoneInfo("America/Sao_Paulo")).strftime("%d/%m/%Y - %H:%M:%S")
@@ -26,14 +31,14 @@ def lambda_handler(event, context):
 
     for i in dict_:
 
-        if event["AlarmContributorAttributes"]["InstanceId"] == i:
+        if alarm["AlarmContributorAttributes"]["InstanceId"] == i:
             instance_name = dict_[i]
             break
 
         else:
             continue
 
-    if event["NewStateValue"] == "OK":
+    if alarm["NewStateValue"] == "OK":
 
         payload = build_ok_card(
             instance_name,
@@ -42,7 +47,7 @@ def lambda_handler(event, context):
             CHAT_ID
         )
 
-    elif event["NewStateValue"] == "ALARM":
+    elif alarm["NewStateValue"] == "ALARM":
 
         payload = build_alarm_card(
             instance_name,
